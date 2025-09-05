@@ -1,20 +1,75 @@
-@import 'bulma/css/bulma.min.css';
+@import "bulma/css/bulma.min.css";
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-body, html {
-background-color: #11111b;
+html,
+body {
+  color: #a8a8a8;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 12px;
+}
+
+.task-item button {
+  padding: 1px 2px;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  padding-bottom: 5px;
+}
+
+.task-item input[type="text"] {
+  background: none;
+  border: none;
+  border-bottom: 1px solid white;
+  color: rgb(252, 252, 252);
+  font-size: 1em;
+}
+
+.task-item input[type="text"]:focus {
+  outline: none;
+  border-bottom: 1px solid white;
+}
+
+.task-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.task-item input[type="checkbox"]:checked {
+  border: none;
+}
+
+.task-item input[type="checkbox"]:checked::after {
+  content: "✔";
+  font-size: 18px;
+  color: #2e8b57;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
