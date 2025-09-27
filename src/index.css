@@ -28,7 +28,7 @@ body {
 .widgets {
   display: flex;
   gap: 20px;
-  align-items: flex-start;  
+  align-items: flex-start;
   justify-content: space-around;
 }
 
@@ -86,3 +86,5 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+
