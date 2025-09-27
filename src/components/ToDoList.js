@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const tasksUrl = "http://localhost:4000/tasks";
 
@@ -18,14 +18,19 @@ function ToDoList() {
   );
 
   const progressPercentage = useMemo(
-    () => (totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100)),
+    () =>
+      totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100),
     [completedTasks, totalTasks]
   );
 
   const tasksBar = useMemo(() => {
     const progressBarLength = 20;
-    const completedLength = Math.round((progressPercentage / 100) * progressBarLength);
-    return `[${"█".repeat(completedLength)}${"░".repeat(progressBarLength - completedLength)}] `;
+    const completedLength = Math.round(
+      (progressPercentage / 100) * progressBarLength
+    );
+    return `[${"█".repeat(completedLength)}${"░".repeat(
+      progressBarLength - completedLength
+    )}] `;
   }, [progressPercentage]);
 
   const getProgressColor = useCallback(
@@ -99,7 +104,9 @@ function ToDoList() {
         const updatedCompleted = !task.completed;
         await axios.put(`${tasksUrl}/${id}`, { completed: updatedCompleted });
         setTasks((prev) =>
-          prev.map((t) => (t._id === id ? { ...t, completed: updatedCompleted } : t))
+          prev.map((t) =>
+            t._id === id ? { ...t, completed: updatedCompleted } : t
+          )
         );
       } catch (err) {
         console.error("Error updating task:", err);
@@ -110,23 +117,22 @@ function ToDoList() {
     [tasks, loading]
   );
 
-  const handleTitleChange = useCallback(
-    async (id, newTitle) => {
-      const safeTitle = newTitle.trim() || "Sans titre"; // sécurité
-      try {
-        setLoading(true);
-        await axios.put(`${tasksUrl}/${id}`, { title: safeTitle });
-        setTasks((prev) => prev.map((t) => (t._id === id ? { ...t, title: safeTitle } : t)));
-      } catch (err) {
-        console.error("Error updating task title:", err);
-      } finally {
-        setEditingId(null);
-        setTitle("");
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const handleTitleChange = useCallback(async (id, newTitle) => {
+    const safeTitle = newTitle.trim() || "Sans titre"; // sécurité
+    try {
+      setLoading(true);
+      await axios.put(`${tasksUrl}/${id}`, { title: safeTitle });
+      setTasks((prev) =>
+        prev.map((t) => (t._id === id ? { ...t, title: safeTitle } : t))
+      );
+    } catch (err) {
+      console.error("Error updating task title:", err);
+    } finally {
+      setEditingId(null);
+      setTitle("");
+      setLoading(false);
+    }
+  }, []);
 
   // ---- Focus auto sur input ----
   useEffect(() => {
@@ -135,8 +141,17 @@ function ToDoList() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <h1 style={{ display: "flex", alignItems: "center", gap: "10px", paddingBottom: "10px" }}>
-        <p style={{ textDecoration: "underline", textUnderlineOffset: "5px" }}>@taskbook</p>
+      <h1
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          paddingBottom: "10px",
+        }}
+      >
+        <p style={{ textDecoration: "underline", textUnderlineOffset: "5px" }}>
+          @taskbook
+        </p>
         <span style={{ color: "#4d4e4eff" }}>
           [{completedTasks}/{totalTasks}]
         </span>
@@ -164,7 +179,9 @@ function ToDoList() {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleTitleChange(task._id, title)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleTitleChange(task._id, title)
+                  }
                   onBlur={() => handleTitleChange(task._id, title)}
                   disabled={loading}
                 />
@@ -177,7 +194,15 @@ function ToDoList() {
                     }
                   }}
                 >
-                  {task.title}
+                  <p
+                    id="task-title"
+                    style={{
+                      textDecoration: task.completed ? "line-through" : "none",
+                      color: task.completed ? "#a3a3a3" : undefined, // Optionnel : grise le texte si complété
+                    }}
+                  >
+                    {task.title}
+                  </p>
                 </span>
               )}
 
