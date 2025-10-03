@@ -6,6 +6,7 @@ function RSS_DevTo() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expanded, setExpanded] = useState([]); // store expanded idxs
 
   useEffect(() => {
     fetch(devto_API)
@@ -38,41 +39,100 @@ function RSS_DevTo() {
   if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
-    <div>
-      <ul>
-        {articles.slice(0, 8).map((article, idx) => (
-          // console.log(idx ,article ),
-          <article className="message rss-widget">
-            <div className="message-body" style={{padding: '50px', paddingBottom: "30px" , maxWidth: '650px'}}>
-              <li key={idx} style={{ marginBottom: 50 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, width: "100%" }}>
+        {articles.slice(0, 8).map((article, idx) => {
+          const isRight = idx % 2 === 1;
+          const isOpen = expanded.includes(idx);
+          return (
+            <li
+              key={idx}
+              style={{
+                display: "flex",
+                justifyContent: isRight ? "flex-end" : "flex-start",
+                width: "100%",
+                marginBottom: 50,
+              }}
+            >
+              <article
+                className="message rss-widget"
+                style={{
+                  width: isOpen ? "min(1500px)" : "min(750px, 90vw)",
+                  maxHeight: isOpen ? "none" : 350,
+                  overflow: isOpen ? "visible" : "hidden",
+                  boxShadow: "0 2px 8px #0001",
+                  textAlign: "left",
+                  padding: 40,
+                  paddingBottom: 24,
+                  marginLeft: isRight ? "auto" : 0,
+                  marginRight: isRight ? 0 : "auto",
+                  borderLeft: isRight ? "none" : "5px solid #d8d8d8ff",
+                  borderRight: isRight ? "5px solid #d8d8d8ff" : "none",
+                  borderRadius: 4,
+                  backgroundColor: isOpen ? "#30303052" : "transparent",
+                  cursor: "pointer",
+                  transition: "max-height 0.3s cubic-bezier(.4,2,.6,1)",
+                }}
+                onClick={() => {
+                  setExpanded((prev) =>
+                    isOpen ? prev.filter((i) => i !== idx) : [...prev, idx]
+                  );
+                }}
+                title={isOpen ? "Réduire" : "Voir plus"}
+              >
                 <a
                   href={article.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  style={{ textDecoration: "none", fontWeight: "bold" }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <h4 style={{ marginBottom: 5, fontSize: 18, fontWeight: "bold" }}>{article.title}</h4>
+                  <h4
+                    style={{
+                      marginBottom: 5,
+                      fontSize: 20,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {article.title}
+                  </h4>
                 </a>
-
-                <p>
-                  by <strong> {article.creator} </strong> on {""}
+                <p style={{ margin: 0, fontSize: 14, color: "#666" }}>
+                  by <strong>{article.creator}</strong> on{" "}
                   <em>{new Date(article.pubDate).toLocaleDateString()}</em>
                 </p>
-                <br />
-                <p
+                <div
+                  style={{ margin: "16px 0 8px 0", fontSize: 15 }}
                   dangerouslySetInnerHTML={{ __html: article.description }}
-                ></p>
-                <p>Categories: {article.categorys}</p>
-                <hr />
-              </li>
-            </div>
-                <div className="separator"></div>
-          </article>
-        ))}
+                ></div>
+                <p style={{ fontSize: 13, color: "#888" }}>
+                  Categories: {article.categorys}
+                </p>
+                <div
+                  style={{
+                    textAlign: "center",
+                    fontSize: 16,
+                    marginTop: 8,
+                    fontWeight: "bold",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {isOpen ? "Réduire" : ""}
+                </div>
+              </article>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
-
-
 
 export default RSS_DevTo;

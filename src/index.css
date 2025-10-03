@@ -79,7 +79,7 @@ body {
 
 .task-item input[type="checkbox"]:checked::after {
   content: "✔";
-  font-size: 18px; 
+  font-size: 18px;
   color: #2e8b57;
   position: absolute;
   top: 50%;
@@ -92,7 +92,7 @@ body {
   margin: 20px 0;
 }
 
-
 .rss-widget:nth-of-type(even) {
-  margin-left: 50%;
+   
+  text-align: left;
 }
