@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-function Clock() {
+function Clock({ type = "analog" }) {
+  
+}
+
+function Analog_Clock() {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -67,6 +71,10 @@ function Clock() {
       </svg>
     </div>
   );
+}
+
+function Digital_Cloack() {
+  return <div>Digital Clock</div>;
 }
 
 export default Clock;

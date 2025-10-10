@@ -1,9 +1,13 @@
 @import "bulma/css/bulma.min.css";
 
+@font-face {
+  font-family: "Necto";
+  src: url("./fonts/NectoMono.otf") format("opentype");
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Necto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -94,4 +98,9 @@ body {
 
 .rss-widget:nth-of-type(even) {
   text-align: left;
+}
+
+.navbar {
+  display: flex;
+  gap: 15px;
 }
