@@ -58,7 +58,7 @@ function App() {
           <section ref={dashboardRef} className="dashboard">
             <div className="widgets">
               <ToDoList />
-              <WIDGET_CLOCK />
+              <WIDGET_CLOCK type="analog" />
             </div>
             <br />
             <div className="widgets">

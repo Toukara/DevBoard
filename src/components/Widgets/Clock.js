@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 
-function Clock({ type = "analog" }) {
-  
+function Clock(type) {
+  if (type.type === "analog") {
+    return <ANALOG_CLOCK />;
+  } else {
+    return <DIGITAL_CLOCK />;
+  }
 }
 
-function Analog_Clock() {
+function ANALOG_CLOCK() {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -62,7 +66,7 @@ function Analog_Clock() {
           y="50%"
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize="3.6rem"
+          fontSize="2rem"
           fill="#A8A8A8"
           fontWeight="bold"
         >
@@ -73,8 +77,25 @@ function Analog_Clock() {
   );
 }
 
-function Digital_Cloack() {
-  return <div>Digital Clock</div>;
+function DIGITAL_CLOCK() {
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  // const seconds = date.getSeconds();
+
+  return (
+    <div>
+      <p>{hours} <span className="blinking" style={{color : "#e91e63", fontWeight: "bolder"}}>:</span> {minutes}</p>
+    </div>
+  );
 }
 
 export default Clock;

@@ -1,8 +1,18 @@
 import { useContext } from "react";
+import { useWeather } from "../hooks/useWeather";
 import { SectionContext } from "../SectionContext";
+import Clock from "./Widgets/Clock";
+
+/* eslint-disable */
+// The "//" in the paragraph tag below is just text, not a comment.
 
 export default function Navbar({ onSectionClick }) {
   const { section } = useContext(SectionContext);
+  const weather = useWeather();
+
+  // Affichage sécurisé pour le weather
+  const weatherLoaded =
+    weather && weather.main && weather.weather && weather.weather[0];
 
   return (
     <div className="container">
@@ -20,7 +30,7 @@ export default function Navbar({ onSectionClick }) {
           padding: "0.5rem 2rem",
           display: "flex",
           alignItems: "center",
-          gap: "1rem",
+          gap: "0.65rem",
         }}
       >
         <h1
@@ -60,20 +70,42 @@ export default function Navbar({ onSectionClick }) {
         >
           flux rss
         </p>
-        <div className="navbar-end">
+        <div
+          className="navbar-end"
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row-reverse",
+          }}
+        >
           <div className="navbar-item">
-            {/* <div className="buttons">
-              <a
-                className="button is-primary"
-                href="https://github.com/toukara"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ backgroundColor: "#e91e63", borderColor: "#e91e63" }}
-              >
-                <strong>Mon GitHub</strong>
-              </a>
-            </div> */}
-            <p>08 : 24 pm</p>
+            <p>
+              {" "}
+              <Clock type="digital" />
+            </p>
+          </div>
+          <div className="navbar-item">
+            <div className="separators">//</div>
+          </div>
+
+          <div className="navbar-item">
+            {weatherLoaded ? (
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                alt="Weather Icon"
+              />
+            ) : (
+              <span
+                style={{ width: 40, height: 40, display: "inline-block" }}
+              />
+            )}
+          </div>
+          <div className="navbar-item">
+            {weatherLoaded ? Math.round(weather.main.temp) + "°C" : "..."}
+          </div>
+          <div className="navbar-item">
+            <div className="separators">//</div>
           </div>
         </div>
       </nav>
