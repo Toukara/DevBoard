@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const { REACT_APP_WEATHER_API_KEY } = process.env;
-const DEFAULT_CITY = "Lens";
+const DEFAULT_CITY = "Arras";
 
 const useWeather = (city) => {
   const [weather, setWeather] = useState(null);
