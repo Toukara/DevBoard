@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import ToDoList from "./components/ToDoList";
 
-import WIDGET_CLOCK from "./components/Widgets/Clock";
+// import WIDGET_CLOCK from "./components/Widgets/Clock";
 // import WIDGET_WEATHER from "./components/Widgets/Weather";
 
 import { Suspense, lazy } from "react";
@@ -91,7 +91,7 @@ function App() {
           <section ref={dashboardRef} className="dashboard">
             <div className="widgets">
               <ToDoList />
-              <WIDGET_CLOCK type="analog" />
+              {/* <WIDGET_CLOCK type="analog" /> */}
             </div>
             <br />
           </section>
