@@ -3,6 +3,7 @@ import { SectionContext } from "./SectionContext";
 
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"
 import ToDoList from "./components/ToDoList";
 
 // import WIDGET_CLOCK from "./components/Widgets/Clock";
@@ -91,9 +92,7 @@ function App() {
           <section ref={dashboardRef} className="dashboard">
             <div className="widgets">
               <ToDoList />
-              {/* <WIDGET_CLOCK type="analog" /> */}
             </div>
-            <br />
           </section>
           <br />
           <section ref={rssRef} className="rss-section">
@@ -102,6 +101,7 @@ function App() {
             </div>
           </section>
         </div>
+        <Footer/>
       </div>
     </SectionContext.Provider>
   );
