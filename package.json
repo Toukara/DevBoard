@@ -28,7 +28,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "nodemon server.js",
-    "dev": "dotenvx run -- concurrently \"yarn run server\" \"yarn run start\""
+    "dev": "dotenvx run -- concurrently \"yarn run server\" \"yarn run start\"",
+    "electron": "electron ."
   },
   "eslintConfig": {
     "extends": [
