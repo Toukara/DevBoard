@@ -21,7 +21,10 @@ function Weather() {
           {weather.name}{" "}
           {weather.sys && weather.sys.country ? `, ${weather.sys.country}` : ""}
         </h2>
-        <div className="weather-widget-cross" style={{ marginLeft: "auto", cursor: "pointer" }}>
+        <div
+          className="weather-widget-cross"
+          style={{ marginLeft: "auto", cursor: "pointer" }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -65,7 +68,7 @@ function Weather() {
           <img
             src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
             alt="Weather Icon"
-            style={{ width: 50, height: 50 }}
+            style={{ width: 60, height: 60 }}
           />
           <p className="weather-widget-subtitle">
             {weather.weather[0].description}

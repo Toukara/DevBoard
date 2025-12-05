@@ -4,11 +4,9 @@ const { exec } = require("child_process");
 const path = require("path");
 const util = require("util");
 const execPromise = util.promisify(exec);
+const http = require("http");
 
-const checkDiskSpace = require("check-disk-space").default;
-
-// ... (gardez vos fonctions getCpuUsage et getDiskSpace)
-
+// Variables pour le calcul CPU
 let previousCpuInfo = null;
 
 function getCpuUsage() {
@@ -42,16 +40,51 @@ function getCpuUsage() {
 }
 
 async function getDiskSpace() {
-  try {
-    // Pour Windows : 'C:/', pour macOS/Linux : '/'
-    const diskPath = process.platform === "win32" ? "C:/" : "/";
-    const diskSpace = await checkDiskSpace(diskPath);
+  const platform = process.platform;
 
-    return {
-      used: (diskSpace.size - diskSpace.free) / 1024 ** 3,
-      total: diskSpace.size / 1024 ** 3,
-      percent: ((diskSpace.size - diskSpace.free) / diskSpace.size) * 100,
-    };
+  try {
+    if (platform === "win32") {
+      const { stdout } = await execPromise(
+        'powershell "Get-PSDrive C | Select-Object Used,Free | ConvertTo-Json"'
+      );
+
+      const data = JSON.parse(stdout);
+      const used = parseInt(data.Used);
+      const free = parseInt(data.Free);
+      const total = used + free;
+
+      return {
+        used: used / 1024 ** 3,
+        total: total / 1024 ** 3,
+        percent: (used / total) * 100,
+      };
+    } else if (platform === "darwin") {
+      const { stdout } = await execPromise("df -k /");
+      const lines = stdout.trim().split("\n");
+      const data = lines[1].split(/\s+/);
+
+      const total = parseInt(data[1]) * 1024;
+      const used = parseInt(data[2]) * 1024;
+
+      return {
+        used: used / 1024 ** 3,
+        total: total / 1024 ** 3,
+        percent: (used / total) * 100,
+      };
+    } else {
+      const { stdout } = await execPromise("df -k /");
+      const lines = stdout.trim().split("\n");
+      const data = lines[1].split(/\s+/);
+
+      const total = parseInt(data[1]) * 1024;
+      const used = parseInt(data[2]) * 1024;
+
+      return {
+        used: used / 1024 ** 3,
+        total: total / 1024 ** 3,
+        percent: (used / total) * 100,
+      };
+    }
   } catch (error) {
     console.error("Erreur récupération disque:", error);
     return {
@@ -78,10 +111,52 @@ ipcMain.handle("get-system-stats", async () => {
       percent: (usedMem / totalMem) * 100,
     },
     disk: diskSpace,
+    uptime: os.uptime(),
   };
 });
 
-function createWindow() {
+function waitForServer(url, timeout = 30000) {
+  return new Promise((resolve, reject) => {
+    const startTime = Date.now();
+
+    const checkServer = () => {
+      http
+        .get(url, (res) => {
+          if (res.statusCode === 200) {
+            console.log("✅ Serveur React prêt !");
+            resolve();
+          } else {
+            retry();
+          }
+        })
+        .on("error", () => {
+          retry();
+        });
+    };
+
+    const retry = () => {
+      if (Date.now() - startTime > timeout) {
+        reject(new Error("Timeout: le serveur React n'a pas démarré"));
+      } else {
+        setTimeout(checkServer, 200);
+      }
+    };
+
+    checkServer();
+  });
+}
+
+async function createWindow() {
+  console.log("⏳ Attente du serveur React...");
+
+  try {
+    await waitForServer("http://localhost:3000");
+  } catch (error) {
+    console.error("❌ Erreur:", error.message);
+    app.quit();
+    return;
+  }
+
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -94,7 +169,6 @@ function createWindow() {
     },
   });
 
-  // Configuration CORS + CSP corrigée
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -103,22 +177,12 @@ function createWindow() {
           "default-src 'self'; " +
             "script-src 'self' 'unsafe-inline'; " +
             "style-src 'self' 'unsafe-inline'; " +
-            "connect-src *",
-          +"img-src 'self' data: https://openweathermap.org",
+            "img-src 'self' data: blob: https:; " + // ← Images HTTPS autorisées
+            "font-src 'self' data:; " +
+            "connect-src 'self' http://localhost:* ws://localhost:* https:",
         ],
       },
     });
-  });
-
-  win.webContents.on("did-finish-load", () => {
-    win.show();
-  });
-
-  win.webContents.on("did-fail-load", () => {
-    console.log("Échec du chargement, réessai...");
-    setTimeout(() => {
-      win.loadURL("http://localhost:3000");
-    }, 1000);
   });
 
   win.loadURL("http://localhost:3000");
