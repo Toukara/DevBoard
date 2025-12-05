@@ -1,6 +1,8 @@
 {
   "name": "devboard",
   "version": "0.1.0",
+  "homepage": "./",
+  "main": "main.js",
   "private": true,
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.0",
@@ -10,16 +12,24 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.11.0",
     "bulma": "^1.0.4",
+    "check-disk-space": "^3.4.0",
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.2.0",
+    "electron": "^39.2.5",
+    "electron-builder": "^26.0.12",
+    "electron-is-dev": "^3.0.1",
     "express": "^5.1.0",
     "isexe": "2.0.0",
+    "lucide-react": "^0.555.0",
     "mongoose": "^8.17.1",
     "nodemon": "^3.1.10",
+    "os-utils": "^0.0.14",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-scripts": "5.0.1",
+    "wait-on": "^9.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -28,7 +38,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "nodemon server.js",
-    "dev": "dotenvx run -- concurrently \"yarn run server\" \"yarn run start\""
+    "dev": "dotenvx run -- concurrently \"yarn run server\" \"yarn run start\"",
+    "electron-dev": "dotenvx run -- concurrently \"yarn run server\" \"yarn run start\" \"electron .\"",
+    "electron": "electron ."
   },
   "eslintConfig": {
     "extends": [

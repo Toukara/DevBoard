@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer"
 import ToDoList from "./components/ToDoList";
 
+import TestWidget from "./components/Widgets/PCConfig";
+
 // import WIDGET_CLOCK from "./components/Widgets/Clock";
 // import WIDGET_WEATHER from "./components/Widgets/Weather";
 
@@ -61,6 +63,7 @@ function App() {
           onSectionClick={scrollToSection}
           onWeatherClick={() => setShowWeather(true)}
         />
+        <TestWidget />
         <Suspense fallback={null}>
           {showWeather && (
             <div

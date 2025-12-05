@@ -10,7 +10,7 @@ function Weather() {
     return <div>Error: {weather.message || weather.error}</div>;
   }
 
-  console.log("Weather data:", weather);
+  // console.log("Weather data:", weather);
   return (
     <div className="widget">
       <div className="weather-widget header" style={{ display: "flex" }}>

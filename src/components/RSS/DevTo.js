@@ -23,7 +23,7 @@ function RSS_DevTo() {
     fetchRSS();
   }, []);
 
-  console.log("Articles data:", articles);
+  // console.log("Articles data:", articles);
 
   return (
     <div className="widget rss-widget">
