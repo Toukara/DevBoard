@@ -93,16 +93,7 @@ function DIGITAL_CLOCK() {
 
   return (
     <div>
-      <p>
-        {hours}{" "}
-        <span
-          className="blinking"
-          style={{ color: "#e91e63", fontWeight: "bolder" }}
-        >
-          :
-        </span>{" "}
-        {minutes}
-      </p>
+      <p>{hours} <span className="blinking" style={{color : "#e91e63", fontWeight: "bolder"}}>:</span> {minutes}</p>
     </div>
   );
 }
