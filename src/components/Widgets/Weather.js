@@ -2,6 +2,7 @@ import { useWeather } from "../../hooks/useWeather";
 
 function Weather() {
   const weather = useWeather();
+  // console.log("Weather data fetched:", weather);
 
   if (!weather) {
     return <div>Loading...</div>;

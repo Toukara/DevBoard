@@ -6,7 +6,7 @@ import WIDGET_WEATHER from "./Widgets/Weather";
 
 // The "//" in the paragraph tag below is just text, not a comment.
 
-export default function Navbar() {
+export default function Navbar({ onLogout }) {
   const weather = useWeather();
   const [showWidget, setShowWidget] = useState(false);
   const weatherRef = useRef(null);
@@ -40,7 +40,23 @@ export default function Navbar() {
         }}
       >
         <div className="navbar-item">
-            <Clock type="digital" />
+          <div className="buttons">
+            <button
+              className="button is-light"
+              onClick={() => {
+                localStorage.removeItem("isAuthenticated");
+                if (onLogout) onLogout();
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+        <div className="navbar-item">
+          <div className="separators">{"//"}</div>
+        </div>
+        <div className="navbar-item">
+          <Clock type="digital" />
         </div>
         <div className="navbar-item">
           <div className="separators">{"//"}</div>
@@ -64,22 +80,6 @@ export default function Navbar() {
           </div>
           <div className="navbar-item">
             {weatherLoaded ? Math.round(weather.main.temp) + "°C" : "..."}
-          </div>
-        </div>
-        <div className="navbar-item">
-          <div className="separators">{"//"}</div>
-        </div>
-        <div className="navbar-item">
-          <div className="buttons">
-            <a
-              className="button is-small"
-              href="https://github.com/toukara"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {" "}
-              Github{" "}
-            </a>
           </div>
         </div>
       </div>

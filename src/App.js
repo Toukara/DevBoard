@@ -1,69 +1,64 @@
-import { useEffect, useRef, useState } from "react";
-import { SectionContext } from "./SectionContext";
+import { useState } from "react";
 
-import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"
-import ToDoList from "./components/ToDoList";
 
-import TestWidget from "./components/Widgets/PCConfig";
+import Login from "./view/Login";
 
-// import WIDGET_CLOCK from "./components/Widgets/Clock";
-// import WIDGET_WEATHER from "./components/Widgets/Weather";
+import LeftPanel from "./components/LeftPanel/index";
+import RSSDevTo from "./components/RSS/DevTo";
+import Taskbook from "./components/ToDoList";
 
 import { Suspense, lazy } from "react";
-import RSSDevTo from "./components/RSS/DevTo";
 
 const WeatherComponent = lazy(() => import("./components/Widgets/Weather"));
 function App() {
-  const [section, setSection] = useState("home");
   const [showWeather, setShowWeather] = useState(false);
-  const dashboardRef = useRef();
-  const rssRef = useRef();
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true",
+  );
+  const [visibleSections, setVisibleSections] = useState({ dashboard: true });
 
-  // Fonction de scroll vers une section
-  const scrollToSection = (key) => {
-    if (key === "dashboard" && dashboardRef.current) {
-      setSection("dashboard");
-      dashboardRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    } else if (key === "rss" && rssRef.current) {
-      setSection("rss");
-      rssRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else if (key === "home") {
-      setSection("home");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
   };
-  // Détection dynamique de la section visible au scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      const dashboardTop =
-        dashboardRef.current?.getBoundingClientRect().top ?? Infinity;
-      const rssTop = rssRef.current?.getBoundingClientRect().top ?? Infinity;
-      if (window.scrollY < 100) {
-        setSection("home");
-      } else if (dashboardTop < window.innerHeight / 2 && dashboardTop > -200) {
-        setSection("dashboard");
-      } else if (rssTop < window.innerHeight / 2 && rssTop > -200) {
-        setSection("rss");
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ height: "100vh" }}>
+        <Login onLogin={handleLogin} />
+      </div>
+    );
+  }
 
   return (
-    <SectionContext.Provider value={{ section, setSection }}>
-      <div className="container mt-5 flex-row">
-        <Navbar
-          onSectionClick={scrollToSection}
-          onWeatherClick={() => setShowWeather(true)}
+    <div className="app-container" style={{ display: "flex", height: "100vh" }}>
+      <div
+        className="left-panel"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "250px",
+          borderRight: "1px solid #ccc",
+        }}
+      >
+        <LeftPanel
+          onSelect={(name) =>
+            setVisibleSections((prev) => ({ ...prev, [name]: !prev[name] }))
+          }
         />
-        <TestWidget />
+      </div>
+      <div className="main-content" style={{ flex: 1, overflowY: "auto" }}>
+        <Navbar
+          onWeatherClick={() => setShowWeather(true)}
+          onLogout={handleLogout}
+        />
         <Suspense fallback={null}>
           {showWeather && (
             <div
@@ -90,23 +85,30 @@ function App() {
             </div>
           )}
         </Suspense>
-        <div className="container mt-5 flex-col">
-          <Header />
-          <section ref={dashboardRef} className="dashboard">
-            <div className="widgets">
-              <ToDoList />
-            </div>
-          </section>
-          <br />
-          <section ref={rssRef} className="rss-section">
-            <div className="RSS-feeds">
-              <RSSDevTo />
-            </div>
-          </section>
-        </div>
-        <Footer/>
+        <main>
+          <div className="container">
+            {visibleSections.taskbook && (
+              <div id="taskbook">
+                <Taskbook />
+              </div>
+            )}
+            {visibleSections.dashboard && (
+              <div id="dashboard">
+                <h1>Welcome to the Dashboard</h1>
+                <p>This is your central hub for all activities.</p>
+              </div>
+            )}
+            {visibleSections.rss && (
+              <div id="rss">
+                <h1>RSS Feeds</h1>
+                <RSSDevTo />
+              </div>
+            )}
+          </div>
+        </main>
+        <Footer />
       </div>
-    </SectionContext.Provider>
+    </div>
   );
 }
 

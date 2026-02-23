@@ -11,8 +11,8 @@ function RSS_DevTo() {
       try {
         const response = await fetch(
           `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
-            devto_API
-          )}`
+            devto_API,
+          )}`,
         );
         const data = await response.json();
         setArticles(data.items || []);
@@ -22,8 +22,6 @@ function RSS_DevTo() {
     }
     fetchRSS();
   }, []);
-
-  // console.log("Articles data:", articles);
 
   return (
     <div className="widget rss-widget">
@@ -129,7 +127,7 @@ function RSS_DevTo() {
             onClick={() => {
               // toggle the expanded article using state instead of direct DOM manipulation
               setShowArticleContent((prev) =>
-                prev === article.guid ? null : article.guid
+                prev === article.guid ? null : article.guid,
               );
             }}
             style={{
